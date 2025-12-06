@@ -1,0 +1,192 @@
+.cards {
+  display: flex;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 2rem 1rem;
+}
+
+.donut-card {
+  width: 240px;
+  max-width: 100%;
+  height: 375px;
+  background-color: #fbe4da;
+  border-radius: 16px;
+  padding: 16px;
+  text-align: center;
+  position: relative; 
+  cursor: pointer;
+  transition: transform 0.28s ease, box-shadow 0.28s ease;
+  overflow: visible;
+  z-index: 0;
+}
+
+.donut-card:hover,
+.donut-card:focus-within {
+  transform: translateY(-6px);
+  box-shadow: 0 12px 22px rgba(0,0,0,0.18);
+  z-index: 10;
+}
+
+.donut-image {
+  width: 100%;
+  height: 180px;
+  object-fit: contain;
+  transition: transform 0.6s ease;
+  transform-origin: center center;
+}
+
+.donut-card:hover .donut-image {
+  animation: spin 8s linear infinite;
+  transform: scale(1.05);
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.donut-name {
+  font-weight: 600;
+  color: #5a3a34;
+  font-size: 1.3rem;
+  margin-top: 10px;
+}
+
+.donut-reveal {
+  position: absolute;
+  left: 16px;
+  right: 16px;
+  bottom: 60px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: center;
+  text-align: center;
+
+  opacity: 0;
+  transform: translateY(8px);
+  pointer-events: none;
+  transition: opacity 0.25s ease, transform 0.25s ease;
+  border-radius: 12px;
+  background: linear-gradient(180deg, rgba(251,228,218,0) 0%, rgba(251,228,218,0.98) 70%);
+}
+
+.donut-card:hover .donut-reveal,
+.donut-card:focus-within .donut-reveal {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+.donut-description {
+  font-size: 0.9rem;
+  color: #6b4e4e;
+  margin: 0;
+}
+
+.donut-price {
+  font-weight: 700;
+  color: #4a2c28;
+  font-size: 1rem;
+}
+
+.add-to-cart {
+  position: absolute;
+  bottom: 16px;           
+  left: 50%;
+  transform: translateX(-50%); 
+  background-color: #d45b52;
+  color: white;
+  border: none;
+  border-radius: 30px;
+  padding: 8px 18px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background 0.3s ease, transform 0.15s ease;
+}
+
+.add-to-cart:hover {
+  background-color: #c24d45;
+  transform: translateX(-50%) scale(1.05);
+}
+
+.donut-card:focus-within { 
+  box-shadow: 0 0 0 3px rgba(212,91,82,0.12); 
+}
+
+/* Responsive Cards */
+@media (max-width: 1024px) {
+  .cards {
+    gap: 1.2rem;
+    padding: 2rem 2rem;
+  }
+
+  .donut-card {
+    width: 220px;
+    height: 360px;
+  }
+
+  .donut-image {
+    height: 160px;
+  }
+
+  .donut-name {
+    font-size: 1.2rem;
+  }
+
+  .donut-price {
+    font-size: 0.95rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .cards {
+    gap: 1rem;
+    padding: 1rem;
+  }
+
+  .donut-card {
+    width: 45%; 
+    height: auto;
+    padding-bottom: 60px;
+  }
+
+  .donut-image {
+    height: 140px;
+  }
+
+  .donut-name {
+    font-size: 1.1rem;
+  }
+
+  .donut-price {
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .donut-card {
+    width: 90%; 
+    padding: 16px;
+    margin-bottom: 1rem;
+  }
+
+  .donut-image {
+    height: 120px;
+  }
+
+  .donut-name {
+    font-size: 1rem;
+  }
+
+  .donut-price {
+    font-size: 0.85rem;
+  }
+
+  .add-to-cart {
+    font-size: 0.8rem;
+    padding: 6px 14px;
+  }
+}

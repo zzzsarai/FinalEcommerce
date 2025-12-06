@@ -1,0 +1,161 @@
+@import url('https://fonts.googleapis.com/css2?family=Macondo+Swash+Caps&display=swap');
+
+.navigation {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #CD2C58; 
+  padding: 10px 30px;  
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  flex-wrap: wrap;
+
+.nav-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.logo-img {
+  width: 70px;
+  height: 70px;
+  object-fit: contain;
+}
+
+.logo-text {
+  font-family: 'Macondo Swash Caps', cursive;
+  font-size: 2.8rem;    
+  color: #ffffff;      
+  margin: 0;
+  letter-spacing: 1px;
+  transition: font-size 0.3s ease;
+}
+
+.nav-links {
+  list-style: none;
+  display: flex;
+  flex-direction: row;
+  gap: 30px;
+  margin: 0;
+  padding: 0;
+  align-items: center;
+  flex-wrap: wrap; 
+}
+
+.nav-links li {
+  display: inline-block;
+}
+
+.nav-links a {
+  color: white;
+  text-decoration: none;
+  font-weight: 500;
+  display: inline-block;
+  padding: 8px 12px;
+  border-radius: 8px;
+  transition: 
+    color 0.3s ease,
+    transform 0.3s ease,
+    background-color 0.3s ease;
+}
+
+.nav-links a:hover {
+  color: #ffe761; 
+  transform: scale(1.15);
+}
+
+.nav-links a.active {
+  color: #ffdcad; 
+  font-weight: bold;
+  transform: scale(1.05);
+}
+
+/* Cart */
+.cart-link {
+  position: relative;
+}
+
+.cart-count {
+  position: absolute;
+  top: -6px;
+  right: -10px;
+  background-color: #ff7a66;
+  color: white;
+  border-radius: 50%;
+  font-size: 0.7rem;
+  font-weight: bold;
+  padding: 2px 6px;
+  line-height: 1;
+}
+
+/* Responsive Navigation */
+@media (max-width: 1024px) {
+  .logo-text {
+    font-size: 2.4rem;
+  }
+  .nav-links {
+    gap: 20px;
+  }
+}
+
+@media (max-width: 768px) {
+  .logo-text {
+    font-size: 2rem;
+  }
+
+  .nav-links {
+    gap: 12px;
+    flex-direction: row;
+  }
+
+  .nav-links a {
+    font-size: 0.95rem;
+    padding: 6px 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  .logo-text {
+    font-size: 1.8rem;
+  }
+
+  .logo-img {
+    width: 55px;
+    height: 55px;
+  }
+
+  .nav-links {
+    gap: 8px; 
+    flex-direction: row;
+  }
+
+  .cart-count {
+    top: -4px;
+    right: -6px;
+    font-size: 0.65rem;
+    padding: 1px 5px;
+  }
+
+  @media (max-width: 360px) {
+    .logo-text {
+      font-size: 1.6rem;
+    }
+
+    .logo-img {
+      width: 50px;
+      height: 50px;
+    }
+
+    .nav-links {
+      flex-direction: row;
+    }
+
+    .nav-links a {
+      font-size: 0.9rem;
+      padding: 5px 8px;
+    }
+  }
+}
+}

@@ -1,0 +1,339 @@
+@import url('https://fonts.googleapis.com/css2?family=Macondo+Swash+Caps&display=swap');
+.checkout-page {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background-color: #fffaf7;
+}
+
+.checkout-container {
+  flex: 1;
+  max-width: 1100px; 
+  width: 95%; 
+  margin: 0 auto;
+  padding: 40px 20px;
+}
+
+.checkout-title {
+  font-size: 2.2rem;
+  color: #333;
+  text-align: center;
+  margin-bottom: 35px;
+}
+
+.order-summary {
+  background: #ffffff;
+  border-radius: 18px;
+  padding: 30px 40px; 
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+  margin-bottom: 35px;
+  width: 100%; 
+}
+
+.order-summary h2 {
+  font-size: 1.3rem;
+  margin-bottom: 18px;
+  color: #333;
+}
+
+.order-summary ul {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 15px 0;
+}
+
+.order-summary li {
+  display: flex;
+  justify-content: space-between;
+  font-size: 1.1rem;
+  color: #555;
+  margin-bottom: 12px;
+}
+
+.order-summary h3 {
+  text-align: right;
+  color: #333;
+  margin-top: 15px;
+  font-size: 1.4rem;
+}
+
+.payment-method {
+  background: #ffffff;
+  border-radius: 18px;
+  padding: 30px 40px;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+  margin-bottom: 35px;
+  width: 100%;
+}
+
+.payment-method h2 {
+  font-size: 1.3rem;
+  margin-bottom: 15px;
+  color: #333;
+}
+
+.payment-method label {
+  display: flex;
+  align-items: center;
+  gap: 10px; 
+  margin-bottom: 10px;
+  font-size: 1.05rem;
+  color: #555;
+  cursor: pointer;
+}
+
+.payment-method input[type="radio"] {
+  accent-color: #ff7a66; 
+  transform: scale(1.1); 
+}
+
+
+.checkout-actions {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 25px;
+}
+
+.confirm-btn,
+.cancel-btn {
+  width: 48%;
+  background-color: #c24d45;
+  color: white;
+  font-size: 1.1rem;
+  font-weight: 600;
+  padding: 16px;
+  border: none;
+  border-radius: 14px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.confirm-btn:hover {
+  background-color: #e56554;
+}
+
+.cancel-btn {
+  background-color: #ccc;
+  color: #333;
+}
+
+.cancel-btn:hover {
+  background-color: #bbb;
+}
+
+.order-confirmed {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 20px 20px;
+  background: #fff;
+  border-radius: 20px;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.08);
+  animation: fadeIn 0.6s ease;
+  max-width: 900px; 
+  margin: 50px auto;
+  min-height: 20vh;
+}
+
+.order-confirmed h2 {
+  color: #28a745;
+  font-size: 2rem;
+  margin-bottom: 10px;
+}
+
+.order-confirmed p {
+  color: #555;
+  font-size: 1.1rem;
+}
+
+.brand-name {
+  font-family: 'Macondo Swash Caps', cursive;
+  color: #ff7a66;
+  font-size: 1.8rem;
+  letter-spacing: 1px;
+}
+
+
+.customer-info {
+  background: #ffffff;
+  border-radius: 18px;
+  padding: 30px 40px;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+  margin-bottom: 35px;
+  width: 100%;
+}
+
+.customer-info h2 {
+  font-size: 1.3rem;
+  margin-bottom: 15px;
+  color: #333;
+}
+
+.customer-info form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.customer-info label {
+  font-size: 1rem;
+  color: #555;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.customer-info input {
+  padding: 12px 14px;
+  border-radius: 10px;
+  border: 1px solid #ddd;
+  font-size: 1rem;
+  transition: border-color 0.3s ease;
+}
+
+.customer-info input:focus {
+  outline: none;
+  border-color: #ff7a66;
+}
+
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(15px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Media Query */
+@media (max-width: 1024px) {
+  .checkout-container {
+    padding: 30px 15px;
+  }
+
+  .checkout-title {
+    font-size: 2rem;
+  }
+
+  .order-summary,
+  .payment-method,
+  .customer-info {
+    padding: 25px 20px;
+  }
+
+  .order-summary h2,
+  .payment-method h2,
+  .customer-info h2 {
+    font-size: 1.2rem;
+  }
+
+  .order-summary h3 {
+    font-size: 1.3rem;
+  }
+
+  .checkout-actions {
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .confirm-btn,
+  .cancel-btn {
+    width: 100%;
+  }
+}
+
+@media (max-width: 768px) {
+  .checkout-container {
+    width: 95%;
+    padding: 20px 10px;
+  }
+
+  .checkout-title {
+    font-size: 1.8rem;
+    margin-bottom: 25px;
+  }
+
+  .order-summary,
+  .payment-method,
+  .customer-info {
+    padding: 20px 15px;
+  }
+
+  .order-summary li {
+    flex-direction: column;
+    align-items: flex-start;
+    font-size: 1rem;
+    margin-bottom: 10px;
+  }
+
+  .order-summary h3 {
+    text-align: left;
+    font-size: 1.25rem;
+  }
+
+  .payment-method label {
+    font-size: 0.95rem;
+  }
+
+  .customer-info label {
+    font-size: 0.95rem;
+  }
+
+  .customer-info input {
+    font-size: 0.95rem;
+    padding: 10px 12px;
+  }
+
+  .checkout-actions {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .confirm-btn,
+  .cancel-btn {
+    width: 100%;
+    font-size: 1rem;
+    padding: 14px;
+  }
+}
+
+@media (max-width: 480px) {
+  .checkout-container {
+    padding: 15px 10px;
+  }
+
+  .checkout-title {
+    font-size: 1.5rem;
+  }
+
+  .order-summary,
+  .payment-method,
+  .customer-info {
+    padding: 15px 12px;
+  }
+
+  .order-summary li {
+    font-size: 0.95rem;
+  }
+
+  .order-summary h3 {
+    font-size: 1.15rem;
+  }
+
+  .customer-info input {
+    font-size: 0.9rem;
+    padding: 8px 10px;
+  }
+
+  .confirm-btn,
+  .cancel-btn {
+    font-size: 0.95rem;
+    padding: 12px;
+  }
+}
