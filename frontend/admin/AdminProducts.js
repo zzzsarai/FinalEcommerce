@@ -51,14 +51,9 @@ export default function AdminProducts() {
       description: "",
       price: 0,
       image: null,
-      currentImage: null,         
+      currentImage: null,
     });
   };
-
-
-  const handleFileChange = (e) => {
-  setNewProduct({ ...newProduct, image: e.target.files[0] });
-};
 
   const addProduct = async () => {
     setFormLoading(true);
