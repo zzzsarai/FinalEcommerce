@@ -15,6 +15,7 @@
   padding: 12px 24px;
   border: none;
   outline: none;
+  font-size: 1rem;
 }
 
 .search-bar-input:focus {
@@ -27,9 +28,28 @@
   padding: 12px 24px;
   border: none;
   cursor: pointer;
+  font-size: 1rem;
   transition: background-color 0.2s;
 }
 
 .search-bar-button:hover {
   background-color: #db2777;
+}
+
+/* --- Responsive Media Query --- */
+@media (max-width: 480px) {
+  .search-bar-form {
+    margin-top: 2rem;
+    max-width: 90%;
+  }
+
+  .search-bar-input {
+    padding: 10px 14px;
+    font-size: 0.85rem; /* smaller font */
+  }
+
+  .search-bar-button {
+    padding: 10px 14px;
+    font-size: 0.85rem; /* smaller font */
+  }
 }
