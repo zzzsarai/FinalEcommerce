@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 export default function AdminOrders() {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
-  const API = "http://localhost:8000/api";
+  const API = "http://localhost:8082/api";
 
   useEffect(() => {
     fetchOrders();
