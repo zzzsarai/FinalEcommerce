@@ -5,7 +5,7 @@ import "./admin-styles/products.css";
 export default function AdminProducts() {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [formLoading, setFormLoading] = useState(false); // new state
+  const [formLoading, setFormLoading] = useState(false);
 
   const [productForm, setProductForm] = useState({
     id: null,
@@ -111,6 +111,7 @@ export default function AdminProducts() {
 
   const deleteProduct = async (id) => {
     if (!window.confirm("Delete this product?")) return;
+
     try {
       await fetch(`${API}/products/${id}`, { method: "DELETE" });
       fetchProducts();
@@ -177,7 +178,11 @@ export default function AdminProducts() {
                 >
                   {formLoading ? "Updating..." : "Update"}
                 </button>
-                <button className="btn cancel-btn" onClick={resetForm} disabled={formLoading}>
+                <button
+                  className="btn cancel-btn"
+                  onClick={resetForm}
+                  disabled={formLoading}
+                >
                   Cancel
                 </button>
               </>
@@ -225,10 +230,17 @@ export default function AdminProducts() {
                       )}
                     </td>
                     <td>
-                      <button className="edit-btn" onClick={() => editProduct(p)} disabled={formLoading}>
+                      <button
+                        className="edit-btn"
+                        onClick={() => editProduct(p)}
+                        disabled={formLoading}
+                      >
                         Edit
                       </button>
-                      <button onClick={() => deleteProduct(p.id)} disabled={formLoading}>
+                      <button
+                        onClick={() => deleteProduct(p.id)}
+                        disabled={formLoading}
+                      >
                         Delete
                       </button>
                     </td>
