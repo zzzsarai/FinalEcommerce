@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -9,21 +8,18 @@ class Cart extends Model
 {
     use HasFactory;
 
-    // Table name (if not "carts")
-    protected $table = 'cart_items';
+    protected $table = 'carts'; // match migration
 
-    // Mass assignable fields
     protected $fillable = [
         'product_id',
-        'name',
+        'product_name',
         'price',
         'quantity',
-        // 'user_id' // if you associate cart with users
+        'image',
     ];
 
-    // Optional: relation to Product
     public function product()
     {
-        return $this->belongsTo(Product::class);
+        return $this->belongsTo(Product::class, 'product_id');
     }
 }
