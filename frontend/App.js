@@ -4,121 +4,148 @@ import Homepage from "./pages/Homepage";
 import Checkout from "./pages/Checkout";
 import Cart from "./pages/Cart";
 import Navigation from "./components/Navigation";
+import AdminDashboard from "./admin/AdminDashboard";
+import AdminOrders from "./admin/AdminOrders";
+import AdminProducts from "./admin/AdminProducts";
 
 import "./styles/App.css";
 
 function App() {
+  const [products, setProducts] = useState([]);
   const [cart, setCart] = useState([]);
   const [toast, setToast] = useState("");
+
+  const API = "http://localhost:8082/api";
 
   const showToast = (message) => {
     setToast(message);
     setTimeout(() => setToast(""), 2000);
   };
 
-  // Fetch cart from backend
+  // Fetch catalog products
   useEffect(() => {
-    fetch("http://localhost:8082/api/cart")
+    fetch(`${API}/products`)
       .then((res) => res.json())
-      .then((data) => setCart(data))
+      .then((data) => setProducts(data))
       .catch((err) => console.error(err));
   }, []);
 
-  const addToCart = async (donut) => {
+  // Fetch cart from backend
+  useEffect(() => {
+    fetch(`${API}/cart`)
+      .then((res) => res.json())
+      .then((data) => {
+        const formatted = data.map((item) => ({
+          ...item,
+          price: Number(item.price),
+        }));
+        setCart(formatted);
+      })
+      .catch((err) => console.error(err));
+  }, []);
+
+  // Add to cart
+  const addToCart = async (product) => {
     try {
-      const res = await fetch("http://localhost:8082/api/cart", {
+      const cartItem = {
+        product_id: product.id,
+        product_name: product.name,
+        price: Number(product.price),
+        quantity: 1,
+        image: product.image,
+      };
+
+      const res = await fetch(`${API}/cart`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...donut, quantity: 1 }),
+        body: JSON.stringify(cartItem),
       });
-      const data = await res.json();
-      showToast(`${donut.name} added to cart!`);
 
-      setCart((prevCart) => {
-        const existing = prevCart.find((item) => item.id === data.id);
+      if (!res.ok) throw new Error("Failed to add to cart");
+      const data = await res.json();
+
+      setCart((prev) => {
+        const existing = prev.find((item) => item.product_id === data.product_id);
         if (existing) {
-          return prevCart.map((item) =>
-            item.id === data.id ? { ...item, quantity: item.quantity + 1 } : item
+          return prev.map((item) =>
+            item.product_id === data.product_id
+              ? { ...item, quantity: item.quantity + 1 }
+              : item
           );
         }
-        return [...prevCart, data];
+        return [...prev, { ...data, price: Number(data.price) }];
       });
+
+      showToast(`${product.name} added to cart`);
     } catch (err) {
       console.error(err);
     }
   };
 
-  const increaseQty = async (id) => {
-    const item = cart.find((c) => c.id === id);
-    if (!item) return;
+  // Increase / Decrease / Remove
+  const updateCartItem = async (id, quantity) => {
+    const res = await fetch(`${API}/cart/${id}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ quantity }),
+    });
+    const data = await res.json();
 
-    try {
-      const res = await fetch(`http://localhost:8082/api/cart/${id}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ quantity: item.quantity + 1 }),
-      });
-      const data = await res.json();
-
-      setCart((prevCart) =>
-        prevCart.map((c) => (c.id === id ? { ...c, quantity: data.quantity } : c))
-      );
-    } catch (err) {
-      console.error(err);
-    }
+    setCart((prev) =>
+      prev.map((item) =>
+        item.id === id ? { ...item, quantity: data.quantity } : item
+      )
+    );
   };
 
-  const decreaseQty = async (id) => {
-    const item = cart.find((c) => c.id === id);
-    if (!item) return;
-
-    if (item.quantity === 1) return removeItem(id);
-
-    try {
-      const res = await fetch(`http://localhost:8082/api/cart/${id}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ quantity: item.quantity - 1 }),
-      });
-      const data = await res.json();
-
-      setCart((prevCart) =>
-        prevCart.map((c) => (c.id === id ? { ...c, quantity: data.quantity } : c))
-      );
-    } catch (err) {
-      console.error(err);
-    }
+  const removeCartItem = async (id) => {
+    await fetch(`${API}/cart/${id}`, { method: "DELETE" });
+    setCart((prev) => prev.filter((item) => item.id !== id));
   };
 
-  const removeItem = async (id) => {
-    try {
-      await fetch(`http://localhost:8082/api/cart/${id}`, { method: "DELETE" });
-      setCart((prevCart) => prevCart.filter((c) => c.id !== id));
-    } catch (err) {
-      console.error(err);
-    }
+  // Clear cart (frontend + backend)
+  const clearCart = async () => {
+    await fetch(`${API}/cart`, { method: "DELETE" });
+    setCart([]);
   };
 
   return (
     <Router>
       <Navigation cartCount={cart.length} />
+      {toast && <div className="toast">{toast}</div>}
+
       <Routes>
-        <Route path="/" element={<Homepage addToCart={addToCart} />} />
+        <Route
+          path="/"
+          element={<Homepage products={products} addToCart={addToCart} />}
+        />
         <Route
           path="/checkout"
-          element={<Checkout cart={cart} clearCart={() => setCart([])} />}
+          element={<Checkout cart={cart} clearCart={clearCart} />}
         />
         <Route
           path="/cart"
           element={
             <Cart
               cart={cart}
-              increaseQty={increaseQty}
-              decreaseQty={decreaseQty}
-              removeItem={removeItem}
+              increaseQty={(id) => {
+                const item = cart.find((i) => i.id === id);
+                if (item) updateCartItem(id, item.quantity + 1);
+              }}
+              decreaseQty={(id) => {
+                const item = cart.find((i) => i.id === id);
+                if (item) {
+                  if (item.quantity === 1) removeCartItem(id);
+                  else updateCartItem(id, item.quantity - 1);
+                }
+              }}
+              removeItem={removeCartItem}
             />
           }
         />
+        <Route path="/admin" element={<AdminDashboard />} />
+        <Route path="/admin/orders" element={<AdminOrders />} />
+        <Route path="/admin/products" element={<AdminProducts />} />
       </Routes>
     </Router>
   );
