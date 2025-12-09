@@ -51,7 +51,7 @@ export default function AdminProducts() {
       description: "",
       price: 0,
       image: null,
-      currentImage: null,
+      currentImage: null,         
     });
   };
 
