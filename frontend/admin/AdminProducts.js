@@ -55,6 +55,11 @@ export default function AdminProducts() {
     });
   };
 
+
+  const handleFileChange = (e) => {
+  setNewProduct({ ...newProduct, image: e.target.files[0] });
+};
+
   const addProduct = async () => {
     setFormLoading(true);
     const formData = new FormData();
