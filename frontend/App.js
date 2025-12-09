@@ -22,31 +22,40 @@ function App() {
     setTimeout(() => setToast(""), 2000);
   };
 
-  // Fetch catalog products
+  // Fetch products
   useEffect(() => {
     fetch(`${API}/products`)
       .then((res) => res.json())
-      .then((data) => setProducts(data))
-      .catch((err) => console.error(err));
+      .then(setProducts)
+      .catch(console.error);
   }, []);
 
-  // Fetch cart from backend
+  // Fetch cart
   useEffect(() => {
     fetch(`${API}/cart`)
       .then((res) => res.json())
-      .then((data) => {
-        const formatted = data.map((item) => ({
-          ...item,
-          price: Number(item.price),
-        }));
-        setCart(formatted);
-      })
-      .catch((err) => console.error(err));
+      .then((data) =>
+        setCart(
+          data.map((item) => ({
+            ...item,
+            price: Number(item.price),
+          }))
+        )
+      )
+      .catch(console.error);
   }, []);
 
-  // Add to cart
+  // Add product to cart
   const addToCart = async (product) => {
     try {
+      // Check if product already in cart
+      const existing = cart.find((item) => item.product_id === product.id);
+      if (existing) {
+        await updateCartItem(existing.id, existing.quantity + 1);
+        showToast(`${product.name} quantity increased`);
+        return;
+      }
+
       const cartItem = {
         product_id: product.id,
         product_name: product.name,
@@ -64,54 +73,68 @@ function App() {
       if (!res.ok) throw new Error("Failed to add to cart");
       const data = await res.json();
 
-      setCart((prev) => {
-        const existing = prev.find((item) => item.product_id === data.product_id);
-        if (existing) {
-          return prev.map((item) =>
-            item.product_id === data.product_id
-              ? { ...item, quantity: item.quantity + 1 }
-              : item
-          );
-        }
-        return [...prev, { ...data, price: Number(data.price) }];
-      });
-
+      setCart((prev) => [...prev, { ...data, price: Number(data.price) }]);
       showToast(`${product.name} added to cart`);
     } catch (err) {
       console.error(err);
+      showToast("Failed to add to cart");
     }
   };
 
-  // Increase / Decrease / Remove
+  // Update cart item quantity
   const updateCartItem = async (id, quantity) => {
-    const res = await fetch(`${API}/cart/${id}`, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ quantity }),
-    });
-    const data = await res.json();
+    try {
+      const res = await fetch(`${API}/cart/${id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ quantity }),
+      });
 
-    setCart((prev) =>
-      prev.map((item) =>
-        item.id === id ? { ...item, quantity: data.quantity } : item
-      )
-    );
+      if (!res.ok) throw new Error("Failed to update cart item");
+      const data = await res.json();
+
+      setCart((prev) =>
+        prev.map((item) =>
+          item.id === id ? { ...item, quantity: data.quantity } : item
+        )
+      );
+    } catch (err) {
+      console.error(err);
+      showToast("Failed to update cart item");
+    }
   };
 
+  // Remove cart item
   const removeCartItem = async (id) => {
-    await fetch(`${API}/cart/${id}`, { method: "DELETE" });
-    setCart((prev) => prev.filter((item) => item.id !== id));
+    try {
+      const res = await fetch(`${API}/cart/${id}`, { method: "DELETE" });
+      if (!res.ok) throw new Error("Failed to remove cart item");
+
+      setCart((prev) => prev.filter((item) => item.id !== id));
+      showToast("Item removed from cart");
+    } catch (err) {
+      console.error(err);
+      showToast("Failed to remove cart item");
+    }
   };
 
-  // Clear cart (frontend + backend)
+  // Clear cart
   const clearCart = async () => {
-    await fetch(`${API}/cart`, { method: "DELETE" });
-    setCart([]);
+    try {
+      const res = await fetch(`${API}/cart`, { method: "DELETE" });
+      if (!res.ok) throw new Error("Failed to clear cart");
+
+      setCart([]);
+      showToast("Cart cleared");
+    } catch (err) {
+      console.error(err);
+      showToast("Failed to clear cart");
+    }
   };
 
   return (
     <Router>
-      <Navigation cartCount={cart.length} />
+      <Navigation cartCount={cart.reduce((acc, item) => acc + item.quantity, 0)} />
       {toast && <div className="toast">{toast}</div>}
 
       <Routes>
