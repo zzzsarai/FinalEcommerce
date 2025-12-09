@@ -1,0 +1,106 @@
+/* ===== Admin Orders Base ===== */
+.admin-orders {
+  min-height: 100vh;
+  background-color: #fffaf7;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  padding: 20px;
+}
+
+.admin-orders h1 {
+  font-size: 2rem;
+  color: #333;
+  text-align: center;
+  margin-bottom: 30px;
+  font-weight: 600;
+}
+
+/* ===== Back Button ===== */
+.back-btn {
+  display: inline-block;
+  margin-bottom: 20px;
+  padding: 10px 18px;
+  background-color: #757271;
+  color: #fff;
+  border-radius: 12px;
+  text-decoration: none;
+  font-weight: 600;
+  transition: background 0.3s ease, transform 0.1s ease;
+}
+.back-btn:hover {
+  background-color: #e56554;
+  transform: scale(1.02);
+}
+
+/* ===== Container ===== */
+.orders-container {
+  max-width: 1400px;  /* Increased width */
+  margin: 0 auto;
+  background: #ffffff;
+  border-radius: 18px;
+  padding: 35px;       /* More padding for spacious layout */
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+/* ===== Orders Table ===== */
+.styled-table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: auto;   /* Ensures columns expand naturally */
+}
+
+.styled-table th,
+.styled-table td {
+  padding: 14px 18px;   /* Slightly larger padding */
+  text-align: left;
+  border-bottom: 1px solid #eee;
+  font-size: 1rem;
+  color: #333;
+}
+
+.styled-table th {
+  background-color: #fff3f0;
+  font-weight: 600;
+}
+
+.styled-table tr:hover {
+  background-color: #fff1eb;
+}
+
+.styled-table tr.completed {
+  background-color: #e0f7e9;
+}
+
+
+/* ===== Buttons ===== */
+.action-btn {
+  background-color: #bb604a;
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  padding: 8px 12px;
+  cursor: pointer;
+  font-size: 0.95rem;
+  font-weight: 600;
+  transition: background 0.3s ease, transform 0.1s ease;
+}
+
+.action-btn:hover {
+  background-color: #e56554;
+}
+
+.action-btn:active {
+  transform: scale(0.95);
+}
+
+/* ===== Responsive ===== */
+@media (max-width: 900px) {
+  .styled-table {
+    font-size: 0.95rem;
+  }
+}
+
+@media (max-width: 600px) {
+  .styled-table {
+    font-size: 0.85rem;
+  }
+}

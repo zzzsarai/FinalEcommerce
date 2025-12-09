@@ -1,0 +1,272 @@
+/* ===== Admin Products Base ===== */
+.admin-products {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background-color: #fffaf7;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  padding: 20px;
+}
+
+.admin-products h1 {
+  font-size: 2rem;
+  color: #333;
+  text-align: center;
+  margin-bottom: 30px;
+  font-weight: 600;
+}
+
+/* ===== Back Button (for products) ===== */
+.back-btn {
+  display: inline-block;
+  margin-bottom: 20px;
+  padding: 10px 18px;
+  background-color: #757271;
+  color: #fff;
+  border-radius: 12px;
+  text-decoration: none;
+  font-weight: 600;
+  transition: background 0.3s ease, transform 0.1s ease;
+  max-width: 30px;
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.back-btn:hover {
+  background-color: #e56554;
+  transform: scale(1.02);
+}
+
+/* ===== Products Container (Side-by-Side Layout) ===== */
+.products-container {
+  display: flex;
+  gap: 30px;
+  align-items: flex-start;
+  flex-wrap: wrap;
+}
+
+/* ===== Products Form ===== */
+.add-product {
+  flex: 1 1 350px;
+  max-width: 400px;
+  background: #ffffff;
+  border-radius: 18px;
+  padding: 25px 30px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  transition: transform 0.2s ease;
+}
+
+.add-product:hover {
+  transform: translateY(-2px);
+}
+
+.add-product .form-group {
+  flex: 1 1 100%;
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 12px;
+}
+
+.add-product input[type="text"],
+.add-product input[type="number"],
+.add-product input[type="file"] {
+  padding: 12px 15px;
+  border-radius: 12px;
+  border: 1px solid #ccc;
+  font-size: 1rem;
+  transition: border 0.2s ease, box-shadow 0.2s ease;
+}
+
+.add-product input:focus {
+  border-color: #cf5340;
+  box-shadow: 0 0 5px rgba(207, 83, 64, 0.3);
+  outline: none;
+}
+
+/* ===== Image Preview ===== */
+.add-product .image-preview {
+  margin-top: 10px;
+}
+
+.add-product .image-preview img {
+  width: 120px;
+  height: 120px;
+  object-fit: cover;
+  border-radius: 12px;
+  border: 1px solid #ccc;
+  margin-top: 5px;
+  transition: transform 0.2s ease;
+}
+
+.add-product .image-preview img:hover {
+  transform: scale(1.05);
+}
+
+/* ===== Form Buttons ===== */
+.add-product .form-actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 15px;
+}
+
+.add-product .btn {
+  padding: 12px 20px;
+  border-radius: 14px;
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 1rem;
+  transition: background 0.3s ease, transform 0.1s ease, box-shadow 0.2s ease;
+}
+
+.add-product .add-btn {
+  background-color: #cf5340;
+  color: #fff;
+  box-shadow: 0 3px 6px rgba(207, 83, 64, 0.3);
+}
+
+.add-product .update-btn {
+  background-color: #9b654c;
+  color: #fff;
+  box-shadow: 0 3px 6px rgba(155, 101, 76, 0.3);
+}
+
+.add-product .cancel-btn {
+  background-color: #757271;
+  color: #fff;
+  box-shadow: 0 3px 6px rgba(117, 114, 113, 0.3);
+}
+
+.add-product .btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+}
+
+.add-product .btn:active {
+  transform: scale(0.97);
+  box-shadow: 0 3px 6px rgba(0,0,0,0.1);
+}
+
+.add-product img {
+  margin-top: 10px;
+  border-radius: 12px;
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
+}
+
+/* ===== Products Table ===== */
+.products-table {
+  flex: 2 1 600px;
+  overflow-x: auto;
+  background: #ffffff;
+  border-radius: 18px;
+  padding: 20px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+}
+
+.products-table table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+.products-table th,
+.products-table td {
+  padding: 12px 15px;
+  text-align: left;
+  border-bottom: 1px solid #eee;
+  font-size: 1rem;
+  color: #333;
+}
+
+.products-table th {
+  background-color: #fff3f0;
+}
+
+.products-table tr:hover {
+  background-color: #fff1eb;
+}
+
+.products-table img {
+  width: 50px;
+  height: 50px;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+/* ===== Action Buttons ===== */
+.admin-products button {
+  background-color: #bb604a;
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  padding: 8px 12px;
+  cursor: pointer;
+  font-size: 0.95rem;
+  transition: background 0.3s ease, transform 0.1s ease;
+}
+
+.admin-products button:hover {
+  background-color: #e56554;
+}
+
+.admin-products button:active {
+  transform: scale(0.95);
+}
+
+.admin-products .edit-btn {
+  background-color: #9b654c;
+}
+
+.admin-products .edit-btn:hover {
+  background-color: #b36c4498;
+}
+
+/* ===== Responsive ===== */
+@media (max-width: 1000px) {
+  .products-container {
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .add-product,
+  .products-table {
+    max-width: 100%;
+    flex: 1 1 100%;
+  }
+}
+
+@media (max-width: 900px) {
+  .add-product input[type="text"],
+  .add-product input[type="number"],
+  .add-product input[type="file"] {
+    flex: 1 1 100%;
+  }
+
+  .admin-products img {
+    width: 40px;
+    height: 40px;
+  }
+}
+
+@media (max-width: 600px) {
+  .add-product {
+    flex-direction: column;
+  }
+
+  .admin-products table {
+    font-size: 0.9rem;
+  }
+
+  .admin-products img {
+    width: 35px;
+    height: 35px;
+  }
+}
