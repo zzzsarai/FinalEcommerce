@@ -4,17 +4,18 @@ import Footer from "../components/Footer";
 import { useNavigate } from "react-router-dom";
 
 function Checkout({ cart, clearCart }) {
+  const [customer, setCustomer] = useState({
+    customer_name: "",
+    address: "",
+    contact_number: "",
+  });
   const [paymentMethod, setPaymentMethod] = useState("");
   const [isConfirmed, setIsConfirmed] = useState(false);
-  const [customer, setCustomer] = useState({
-    fullName: "",
-    address: "",
-    contactNumber: "",
-  });
+  const [isLoading, setIsLoading] = useState(false); // new state
   const navigate = useNavigate();
 
   const totalPrice = cart.reduce(
-    (acc, item) => acc + item.price * item.quantity,
+    (acc, item) => acc + Number(item.price) * item.quantity,
     0
   );
 
@@ -24,8 +25,8 @@ function Checkout({ cart, clearCart }) {
   };
 
   const handleConfirmOrder = async () => {
-    if (!customer.fullName || !customer.address || !customer.contactNumber) {
-      alert("Please fill in all your details before confirming your order.");
+    if (!customer.customer_name || !customer.address || !customer.contact_number) {
+      alert("Please fill in all your details.");
       return;
     }
 
@@ -34,41 +35,53 @@ function Checkout({ cart, clearCart }) {
       return;
     }
 
+    setIsLoading(true); // start loading
+
+    const orderData = {
+      ...customer,
+      payment_method: paymentMethod,
+      total: totalPrice,
+      items: cart.map((item) => ({
+        product_id: item.product_id || item.id,
+        quantity: item.quantity,
+        price: Number(item.price),
+      })),
+    };
+
     try {
-      // Send order to backend
+      // 1️⃣ Create order
       const response = await fetch("http://localhost:8082/api/orders", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          customer_name: customer.fullName,
-          address: customer.address,
-          contact_number: customer.contactNumber,
-          payment_method: paymentMethod,
-          total: totalPrice,
-          items: cart.map((item) => ({
-            product_id: item.id,
-            quantity: item.quantity,
-            price: item.price,
-          })),
-        }),
+        body: JSON.stringify(orderData),
       });
 
-      if (!response.ok) throw new Error("Failed to place order");
-
       const data = await response.json();
-      console.log("Order success:", data);
 
-      setIsConfirmed(true);
+      if (!response.ok) {
+        alert(`Checkout failed: ${data.message || "Unknown error"}`);
+        setIsLoading(false);
+        return;
+      }
+
+      // 2️⃣ Clear backend cart
+      await fetch("http://localhost:8082/api/cart", { method: "DELETE" });
+
+      // 3️⃣ Clear frontend cart
       clearCart();
 
+      // 4️⃣ Show confirmation
+      setIsConfirmed(true);
+      setIsLoading(false);
+
+      // Redirect after 5 seconds
       setTimeout(() => navigate("/"), 5000);
     } catch (err) {
-      console.error(err);
-      alert("Something went wrong. Please try again.");
+      console.error("Fetch error:", err);
+      alert("Checkout failed. Check console for details.");
+      setIsLoading(false);
     }
   };
-
-  const handleCancel = () => navigate("/cart");
 
   return (
     <div className="checkout-page">
@@ -76,75 +89,59 @@ function Checkout({ cart, clearCart }) {
         <main className="checkout-container">
           <h1 className="checkout-title">Checkout</h1>
 
-          {/* Customer Information */}
-          <section className="customer-info">
+          <div className="customer-info">
             <h2>Customer Details</h2>
-            <form>
-              <label>
-                Full Name:
-                <input
-                  type="text"
-                  name="fullName"
-                  value={customer.fullName}
-                  onChange={handleChange}
-                  placeholder="Enter your full name"
-                  required
-                />
-              </label>
+            <label>
+              Full Name
+              <input
+                type="text"
+                name="customer_name"
+                value={customer.customer_name}
+                onChange={handleChange}
+              />
+            </label>
+            <label>
+              Address
+              <input
+                type="text"
+                name="address"
+                value={customer.address}
+                onChange={handleChange}
+              />
+            </label>
+            <label>
+              Contact Number
+              <input
+                type="text"
+                name="contact_number"
+                value={customer.contact_number}
+                onChange={handleChange}
+              />
+            </label>
+          </div>
 
-              <label>
-                Address:
-                <input
-                  type="text"
-                  name="address"
-                  value={customer.address}
-                  onChange={handleChange}
-                  placeholder="Enter your complete address"
-                  required
-                />
-              </label>
-
-              <label>
-                Contact Number:
-                <input
-                  type="text"
-                  name="contactNumber"
-                  value={customer.contactNumber}
-                  onChange={handleChange}
-                  placeholder="Enter your contact number"
-                  required
-                />
-              </label>
-            </form>
-          </section>
-
-          {/* Order Summary */}
-          <section className="order-summary">
+          <div className="order-summary">
             <h2>Order Summary</h2>
-            {cart.length > 0 ? (
-              <>
-                <ul>
-                  {cart.map((item) => (
-                    <li key={item.id}>
-                      {item.name} x {item.quantity}
-                      <span>₱{(item.price * item.quantity).toFixed(2)}</span>
-                    </li>
-                  ))}
-                </ul>
-                <h3>Total: ₱{totalPrice.toFixed(2)}</h3>
-              </>
+            {cart.length === 0 ? (
+              <p>Cart is empty</p>
             ) : (
-              <p>Your cart is empty.</p>
+              <ul>
+                {cart.map((item) => (
+                  <li key={item.product_id || item.id}>
+                    {item.product_name || item.name} x {item.quantity} = ₱
+                    {(Number(item.price) * item.quantity).toFixed(2)}
+                  </li>
+                ))}
+              </ul>
             )}
-          </section>
+            <h3>Total: ₱{totalPrice.toFixed(2)}</h3>
+          </div>
 
-          {/* Payment Method */}
-          <section className="payment-method">
+          <div className="payment-method">
             <h2>Payment Method</h2>
             <label>
               <input
                 type="radio"
-                name="payment"
                 value="GCash"
                 checked={paymentMethod === "GCash"}
                 onChange={(e) => setPaymentMethod(e.target.value)}
@@ -154,25 +151,23 @@ function Checkout({ cart, clearCart }) {
             <label>
               <input
                 type="radio"
-                name="payment"
                 value="COD"
                 checked={paymentMethod === "COD"}
                 onChange={(e) => setPaymentMethod(e.target.value)}
               />
               Cash on Delivery
             </label>
-          </section>
+          </div>
 
-          {/* Buttons */}
           <div className="checkout-actions">
             <button
               className="confirm-btn"
               onClick={handleConfirmOrder}
-              disabled={cart.length === 0}
+              disabled={cart.length === 0 || isLoading}
             >
-              Confirm Order
+              {isLoading ? "Confirming..." : "Confirm Order"}
             </button>
-            <button className="cancel-btn" onClick={handleCancel}>
+            <button className="cancel-btn" onClick={() => navigate("/cart")}>
               Cancel
             </button>
           </div>
@@ -180,13 +175,8 @@ function Checkout({ cart, clearCart }) {
       ) : (
         <div className="order-confirmed">
           <h2>✅ Order Confirmed!</h2>
-          <p>
-            Thank you, <strong>{customer.fullName}</strong>! Your order has been
-            placed successfully.
-          </p>
-          <p>
-            Have a <span className="brand-name">Glazy Day!</span>
-          </p>
+          <p>Thank you {customer.customer_name}! Your order has been placed.</p>
+          <p>Redirecting to homepage...</p>
         </div>
       )}
 

@@ -3,10 +3,10 @@ import "../styles/Catalog.css";
 import "../styles/DonutCard.css";
 
 function Catalog({ products, searchQuery, addToCart }) {
-  const [addedIds, setAddedIds] = useState([]); // track which donuts were just added
+  const [addedIds, setAddedIds] = useState([]);
 
   const handleAdd = (product) => {
-    addToCart(product);
+    addToCart(product); // call App.js function
     setAddedIds((prev) => [...prev, product.id]);
 
     // revert button text after 2 seconds
@@ -15,6 +15,7 @@ function Catalog({ products, searchQuery, addToCart }) {
     }, 2000);
   };
 
+  // Filter products based on search
   const filteredProducts = products.filter((product) =>
     product.name.toLowerCase().includes(searchQuery.toLowerCase())
   );

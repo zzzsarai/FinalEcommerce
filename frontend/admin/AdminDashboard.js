@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import "./admin-styles/admin.css";
 
 export default function AdminDashboard() {
   const [productsCount, setProductsCount] = useState(0);
@@ -21,7 +22,8 @@ export default function AdminDashboard() {
   return (
     <div className="admin-dashboard">
       <h1>Admin Dashboard</h1>
-      <div style={{ display: "flex", gap: 20 }}>
+
+      <div className="cards-container">
         <div className="card">
           <h2>Products</h2>
           <p>{productsCount}</p>

@@ -35,8 +35,34 @@
     opacity: 0.9;
 }
 
-@media (max-width: 600px) {
+/* Tablets */
+@media (max-width: 900px) {
+    .banner-text h2 {
+        font-size: 2rem;
+    }
 
+    .banner-text p {
+        font-size: 1rem;
+    }
+}
+
+/* Small tablets / large phones */
+@media (max-width: 768px) {
+    .banner-text h2 {
+        font-size: 1.6rem;
+    }
+
+    .banner-text p {
+        font-size: 0.9rem;
+    }
+
+    .banner-content {
+        flex-direction: column;
+    }
+}
+
+/* Mobile phones */
+@media (max-width: 600px) {
     .banner-text h2 {
         font-size: 1.2rem;
     }

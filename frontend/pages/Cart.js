@@ -4,32 +4,54 @@ import Footer from "../components/Footer";
 import "../styles/Cart.css";
 import { useNavigate } from "react-router-dom";
 
-function Cart() {
+function Cart({ cart: parentCart, increaseQty, decreaseQty, removeItem }) {
   const navigate = useNavigate();
   const [cart, setCart] = useState([]);
 
-  // Fetch cart from backend on mount
-  useEffect(() => {
-    fetch("http://localhost:8082/api/cart")
-      .then((res) => res.json())
-      .then((data) => setCart(data))
-      .catch((err) => console.error("Error fetching cart:", err));
-  }, []);
+  const API = "http://localhost:8082/api";
 
-  const updateCart = async (itemId, quantity) => {
+  // Fetch cart items on mount
+  useEffect(() => {
+    if (parentCart) {
+      // Ensure all prices are numbers
+      const formatted = parentCart.map((item) => ({
+        ...item,
+        price: Number(item.price) || 0,
+      }));
+      setCart(formatted);
+    } else {
+      fetchCart();
+    }
+  }, [parentCart]);
+
+  const fetchCart = async () => {
     try {
-      const response = await fetch(`http://localhost:8082/api/cart/${itemId}`, {
+      const res = await fetch(`${API}/cart`);
+      const data = await res.json();
+
+      const formattedData = data.map((item) => ({
+        ...item,
+        price: Number(item.price) || 0, // ensure number
+      }));
+
+      setCart(formattedData);
+    } catch (err) {
+      console.error("Error fetching cart:", err);
+    }
+  };
+
+  // Update cart quantity
+  const updateCart = async (id, quantity) => {
+    try {
+      const res = await fetch(`${API}/cart/${id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ quantity }),
       });
-
-      if (!response.ok) throw new Error("Failed to update cart");
-
-      // Update local state
+      const data = await res.json();
       setCart((prev) =>
         prev.map((item) =>
-          item.id === itemId ? { ...item, quantity } : item
+          item.id === id ? { ...item, quantity: data.quantity } : item
         )
       );
     } catch (err) {
@@ -37,33 +59,33 @@ function Cart() {
     }
   };
 
-  const removeItem = async (itemId) => {
+  // Remove cart item
+  const removeCartItem = async (id) => {
     try {
-      const response = await fetch(`http://localhost:8082/api/cart/${itemId}`, {
-        method: "DELETE",
-      });
-
-      if (!response.ok) throw new Error("Failed to remove item");
-
-      setCart((prev) => prev.filter((item) => item.id !== itemId));
+      await fetch(`${API}/cart/${id}`, { method: "DELETE" });
+      setCart((prev) => prev.filter((item) => item.id !== id));
     } catch (err) {
       console.error(err);
     }
   };
 
-  const increaseQty = (id) => {
+  // Increase / Decrease quantity
+  const handleIncrease = (id) => {
     const item = cart.find((i) => i.id === id);
     if (item) updateCart(id, item.quantity + 1);
   };
 
-  const decreaseQty = (id) => {
+  const handleDecrease = (id) => {
     const item = cart.find((i) => i.id === id);
-    if (item && item.quantity > 1) updateCart(id, item.quantity - 1);
-    else if (item && item.quantity === 1) removeItem(id);
+    if (!item) return;
+
+    if (item.quantity === 1) removeCartItem(id);
+    else updateCart(id, item.quantity - 1);
   };
 
+  // Total price
   const totalPrice = cart.reduce(
-    (acc, item) => acc + item.price * item.quantity,
+    (acc, item) => acc + Number(item.price) * item.quantity,
     0
   );
 
@@ -78,29 +100,29 @@ function Cart() {
           <>
             {cart.map((item) => (
               <div className="cart-item" key={item.id}>
-                <img src={item.image} alt={item.name} />
+                <img
+                  src={`http://localhost:8082/images/donuts/${item.image}`}
+                  alt={item.product_name}
+                  className="cart-item-image"
+                />
                 <div className="cart-item-info">
-                  <p className="cart-item-name">{item.name}</p>
-                  <p className="cart-item-price">₱{item.price}</p>
+                  <p className="cart-item-name">{item.product_name}</p>
+                  <p className="cart-item-price">
+                    ₱{Number(item.price).toFixed(2)}
+                  </p>
                 </div>
 
                 <div className="cart-item-controls">
-                  <button
-                    className="qty-btn"
-                    onClick={() => decreaseQty(item.id)}
-                  >
+                  <button className="qty-btn" onClick={() => handleDecrease(item.id)}>
                     -
                   </button>
                   <span className="cart-quantity">{item.quantity}</span>
-                  <button
-                    className="qty-btn"
-                    onClick={() => increaseQty(item.id)}
-                  >
+                  <button className="qty-btn" onClick={() => handleIncrease(item.id)}>
                     +
                   </button>
                   <button
                     className="remove-btn"
-                    onClick={() => removeItem(item.id)}
+                    onClick={() => removeCartItem(item.id)}
                     title="Remove item"
                   >
                     <FaTrash />
@@ -109,12 +131,9 @@ function Cart() {
               </div>
             ))}
 
-            <h2 className="cart-total">Total: ₱{totalPrice}</h2>
+            <h2 className="cart-total">Total: ₱{totalPrice.toFixed(2)}</h2>
 
-            <button
-              className="checkout-btn"
-              onClick={() => navigate("/checkout")}
-            >
+            <button className="checkout-btn" onClick={() => navigate("/checkout")}>
               Proceed to Checkout
             </button>
           </>
