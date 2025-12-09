@@ -3,13 +3,15 @@ import React, { useEffect, useState } from "react";
 export default function AdminProducts() {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
+
   const [newProduct, setNewProduct] = useState({
     name: "",
     description: "",
     price: 0,
-    image: "",
+    image: null, // file
   });
-  const API = "http://localhost:8081/api";
+
+  const API = "http://localhost:8082/api";
 
   useEffect(() => {
     fetchProducts();
@@ -28,17 +30,38 @@ export default function AdminProducts() {
   };
 
   const handleInput = (e) => {
-    setNewProduct({ ...newProduct, [e.target.name]: e.target.value });
+    if (e.target.name === "image") {
+      setNewProduct({ ...newProduct, image: e.target.files[0] });
+    } else {
+      setNewProduct({ ...newProduct, [e.target.name]: e.target.value });
+    }
   };
 
+
+  const handleFileChange = (e) => {
+  setNewProduct({ ...newProduct, image: e.target.files[0] });
+};
+
   const addProduct = async () => {
+    const formData = new FormData();
+    formData.append("name", newProduct.name);
+    formData.append("description", newProduct.description);
+    formData.append("price", newProduct.price);
+    formData.append("image", newProduct.image);
+
     try {
       await fetch(`${API}/products`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(newProduct),
+        body: formData, // Do NOT set headers manually
       });
-      setNewProduct({ name: "", description: "", price: 0, image: "" });
+
+      setNewProduct({
+        name: "",
+        description: "",
+        price: 0,
+        image: null,
+      });
+
       fetchProducts();
     } catch (err) {
       console.error(err);
@@ -47,6 +70,7 @@ export default function AdminProducts() {
 
   const deleteProduct = async (id) => {
     if (!window.confirm("Delete this product?")) return;
+
     try {
       await fetch(`${API}/products/${id}`, { method: "DELETE" });
       fetchProducts();
@@ -82,13 +106,11 @@ export default function AdminProducts() {
           value={newProduct.price}
           onChange={handleInput}
         />
-        <input
-          type="text"
-          name="image"
-          placeholder="Image URL"
-          value={newProduct.image}
-          onChange={handleInput}
-        />
+
+        {/* Image File Upload */}
+        <input type="file" name="image" onChange={handleFileChange} />
+
+
         <button onClick={addProduct}>Add Product</button>
       </div>
 
@@ -115,7 +137,13 @@ export default function AdminProducts() {
                 <td>{p.description}</td>
                 <td>₱{p.price}</td>
                 <td>
-                  {p.image && <img src={p.image} alt={p.name} width="50" />}
+                  {p.image && (
+                    <img
+                      src={`http://localhost:8082/images/donuts/${p.image}`}
+                      alt={p.name}
+                      width="50"
+                    />
+                  )}
                 </td>
                 <td>
                   <button onClick={() => deleteProduct(p.id)}>Delete</button>

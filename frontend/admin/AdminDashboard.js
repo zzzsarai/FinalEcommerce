@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 export default function AdminDashboard() {
   const [productsCount, setProductsCount] = useState(0);
   const [ordersCount, setOrdersCount] = useState(0);
-  const API = "http://localhost:8000/api";
+  const API = "http://localhost:8082/api";
 
   useEffect(() => {
     fetch(`${API}/products`)
